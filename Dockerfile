@@ -1,4 +1,6 @@
 FROM node:18-alpine AS base
+FROM ubuntu:latest
+RUN apt-get update && apt-get install -y bash curl
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -15,6 +17,10 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Add this line to get the API URL during build
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
